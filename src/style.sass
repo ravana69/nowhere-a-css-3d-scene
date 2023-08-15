@@ -1,0 +1,61 @@
+*
+	border: 0
+	box-sizing: border-box
+	margin: 0
+	padding: 0
+body, .world
+	transform:
+		style: preserve-3d
+body
+	background: #000
+	display: grid
+	place-items: center
+	font: 40px/1.5 sans-serif
+	height: 100vh
+	overflow: hidden
+	perspective: 800px
+
+$groundSize: 40em
+$groundRadius: $groundSize / 2
+$skySize: $groundSize * 3.1415
+$cameraY: 0.5em
+$cameraZ: 18.9em
+$skyTexture: "https://i.ibb.co/ZBNM5w2/sky.jpg"
+$groundTexture: "https://i.ibb.co/vxdyNTD/barren-wasteland.jpg"
+
+.world
+	animation: camera 60s linear infinite
+	position: relative
+	transform: translateZ($cameraZ) translateY($cameraY) rotateX(0deg) rotateY(0deg)
+.sky-segment, .ground
+	position: absolute
+	top: 50%
+	left: 50%
+.sky-segment
+	$segments: 32
+	$segmentW: $skySize / $segments
+	$scale: 0.3333
+	background:
+		image: linear-gradient(0deg,rgb(158,139,111),rgba(158,139,111,0) 0.25em), url($skyTexture)
+		size: ($skySize * $scale) (100% * $scale)
+		repeat-y: no-repeat
+	width: $skySize / $segments
+	height: $skySize / 2
+	@for $s from 1 through $segments
+		&:nth-child(#{$s})
+			background:
+				position: ($segmentW * -($s - 1)) 100%
+			transform: translate(-50%,-99.9%) rotateY(360deg/$segments * -($s - 1)) translateZ(calc(#{-$groundRadius} + 0.2em))
+.ground
+	background:
+		color: #222
+		image: url($groundTexture)
+		size: 25% 25%
+	border-radius: 50%
+	width: $groundSize
+	height: $groundSize
+	transform: translate(-50%,-50%) rotateX(90deg)
+
+@keyframes camera
+	to
+		transform: translateZ($cameraZ) translateY($cameraY) rotateX(0deg) rotateY(1turn)
